@@ -21,7 +21,8 @@ command /halloweenevent [<text>]:
         if arg-1 is "place":
             execute console command "kill @e[type=minecraft:item_display,tag=halloween_pumpkin]"
             execute console command "kill @e[type=minecraft:interaction,tag=halloween_click]"
-            if "{@head_texture}" is "PASTE_TEXTURE_VALUE_HERE":
+            set {_tex} to "{@head_texture}"
+            if {_tex} is "PASTE_TEXTURE_VALUE_HERE":
                 set {_item} to "{id:'minecraft:jack_o_lantern',count:1}"
                 set {_disp} to "none"
             else:
