@@ -1,0 +1,98 @@
+options:
+    end: 1793491200
+    base_y: 1.2
+    click_y: 0.8
+    size: 0.6
+    rotation: 0
+    facing: vertical
+    head_texture: PASTE_TEXTURE_VALUE_HERE
+
+# /halloweenevent place      -> stand over the pit, makes the floating pumpkin + click box at your feet
+# /halloweenevent remove     -> removes every tagged pumpkin + click box (in loaded chunks)
+# /halloweenevent removenear -> removes ANY display/click entity within 3 blocks of you (for stray or old untagged pumpkins)
+# /halloweeninfo             -> anyone can open the event menu
+# size = pumpkin size (if you use a textured head, try 1.0 and adjust), rotation = which way it points (0, 90, 180, 270)
+# facing = vertical (turns left/right to face you, stays upright), fixed (never turns) or center (also tilts up/down)
+# head_texture = the long 'Value' string of a pumpkin head from minecraft-heads.com. Leave as is to use a plain jack o'lantern.
+
+command /halloweenevent [<text>]:
+    permission: tshu.admin
+    trigger:
+        if arg-1 is "place":
+            execute console command "kill @e[type=minecraft:item_display,tag=halloween_pumpkin]"
+            execute console command "kill @e[type=minecraft:interaction,tag=halloween_click]"
+            if "{@head_texture}" is "PASTE_TEXTURE_VALUE_HERE":
+                set {_item} to "{id:'minecraft:jack_o_lantern',count:1}"
+                set {_disp} to "none"
+            else:
+                set {_item} to "{id:'minecraft:player_head',count:1,components:{'minecraft:profile':{properties:[{name:'textures',value:'{@head_texture}'}]}}}"
+                set {_disp} to "head"
+            execute console command "execute as %player% at %player% run summon minecraft:item_display ~ ~{@base_y} ~ {Tags:['halloween_pumpkin'],Rotation:[{@rotation}f,0f],item:%{_item}%,item_display:'%{_disp}%',billboard:'{@facing}',transformation:{translation:[0f,0f,0f],left_rotation:[0f,0f,0f,1f],scale:[{@size}f,{@size}f,{@size}f],right_rotation:[0f,0f,0f,1f]}}"
+            execute console command "execute as %player% at %player% run summon minecraft:interaction ~ ~{@click_y} ~ {Tags:['halloween_click'],width:0.9f,height:0.9f,response:1b}"
+            send "<##FF7F00>Pumpkin placed. Use /halloweenevent remove to take it away."
+        else if arg-1 is "remove":
+            execute console command "kill @e[type=minecraft:item_display,tag=halloween_pumpkin]"
+            execute console command "kill @e[type=minecraft:interaction,tag=halloween_click]"
+            send "<##FF7F00>Pumpkins removed. Still see one? Stand next to it and use /halloweenevent removenear"
+        else if arg-1 is "removenear":
+            # no tag filter on purpose: catches pumpkins from older versions of this script
+            execute console command "execute as %player% at %player% run kill @e[type=minecraft:item_display,distance=..3]"
+            execute console command "execute as %player% at %player% run kill @e[type=minecraft:interaction,distance=..3]"
+            send "<##FF7F00>Removed pumpkins within 3 blocks of you."
+        else:
+            send "<gray>Use /halloweenevent place, /halloweenevent remove or /halloweenevent removenear"
+
+command /halloweeninfo:
+    aliases: /halloween
+    trigger:
+        halloweenMenu(player)
+
+on load:
+    set {-halloween::step} to 0
+    set {-halloween::ang} to 0
+
+# gentle bobbing: a new target every 4 ticks along a sine wave (one bob every 4 seconds).
+# Each move lasts 6 ticks, longer than the gap between updates, so it never stops at a target
+# and the turnaround at the top and bottom stays smooth.
+# (animation paused: the loop below was switched off to stop console spam)
+# every 4 ticks:
+#     set {-halloween::step} to mod({-halloween::step} + 1, 20)
+#     set {_y} to round(1000 * (0.12 + 0.12 * sin({-halloween::step} * 18))) / 1000
+#     execute console command "execute as @e[type=minecraft:item_display,tag=halloween_pumpkin] run data merge entity @s {billboard:'{@facing}',start_interpolation:0,interpolation_duration:6,transformation:{translation:[0f,%{_y}%f,0f],left_rotation:[0f,0f,0f,1f],scale:[{@size}f,{@size}f,{@size}f],right_rotation:[0f,0f,0f,1f]}}"
+
+# orange swirl underneath the pumpkin: three arms spiralling down into a funnel
+# (animation paused: the loop below was switched off to stop console spam)
+# every 2 ticks:
+#     add 1 to {-halloween::ang}
+#     loop 3 times:
+#         set {_a} to ({-halloween::ang} * 14) + (loop-value * 120)
+#         set {_f} to mod({_a}, 360) / 360
+#         set {_r} to 0.08 + (0.38 * (1 - {_f}))
+#         set {_dx} to round(1000 * {_r} * cos({_a})) / 1000
+#         set {_dz} to round(1000 * {_r} * sin({_a})) / 1000
+#         set {_dy} to round(1000 * (-0.35 - (0.65 * {_f}))) / 1000
+#         execute console command "execute as @e[type=minecraft:item_display,tag=halloween_pumpkin] at @s run particle minecraft:dust{color:[1.0,0.55,0.0],scale:0.9} ~%{_dx}% ~%{_dy}% ~%{_dz}% 0 0 0 0 1 force"
+
+# right click the pumpkin -> opens the explanation menu
+on right click on entity:
+    if scoreboard tags of event-entity contains "halloween_click":
+        cancel event
+        halloweenMenu(player)
+
+function halloweenMenu(p: player):
+    set {_left} to {@end} - (unix timestamp of now)
+    if {_left} < 0:
+        set {_left} to 0
+    set {_d} to floor({_left} / 86400)
+    set {_h} to floor(mod({_left}, 86400) / 3600)
+    set {_m} to floor(mod({_left}, 3600) / 60)
+    # build the menu first, then open it ("current inventory" isn't the new menu yet right after opening)
+    set {_gui} to chest inventory with 3 rows named "<##FF7F00>ʜᴀʟʟᴏᴡᴇᴇɴ ᴇᴠᴇɴᴛ"
+    set slot 11 of {_gui} to book named "<##FF7F00>Halloween Event" with lore "<white>Halloween is here for a limited time!" and "<white>Earn treats as you play" and "<white>and spend them on event items." and "" and "<white>Ends in <##FF7F00>%{_d}%d %{_h}%h %{_m}%m"
+    set slot 15 of {_gui} to carved pumpkin named "<##FF7F00>Halloween Treats" with lore "<white>Limited time event currency" and "" and "<##FF7F00>Earned from:" and "<##FF7F00>• <white>Your daily bonus" and "<##FF7F00>• <white>Selling items <gray>(daily limit: 40)" and "<##FF7F00>• <white>Farming crops <gray>(daily limit: 40)" and "<##FF7F00>• <white>PvP kills <gray>(daily limit: 30)" and "" and "<white>Log in each day to build a streak." and "<white>Spend them at <##FF7F00>/treatshop <white>before the event ends!"
+    open {_gui} to {_p}
+
+# stop players taking items out of the menu (title is in small caps, so it must match exactly)
+on inventory click:
+    uncolored name of player's current inventory is "ʜᴀʟʟᴏᴡᴇᴇɴ ᴇᴠᴇɴᴛ"
+    cancel event
