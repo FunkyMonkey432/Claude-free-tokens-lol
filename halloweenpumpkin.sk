@@ -39,9 +39,10 @@ command /halloweenevent [<text>]:
             # removes ONE thing: whatever non-player entity is closest to your head (within 3 blocks).
             # No tag/type filter, so it also catches old pumpkins from earlier versions of the script.
             set {_best} to 4
-            loop all entities in radius 3 around player's eye location:
+            set {_eye} to player's eye location
+            loop all entities in radius 3 around {_eye}:
                 if loop-entity is not a player:
-                    set {_dist} to distance between location of loop-entity and player's eye location
+                    set {_dist} to distance between location of loop-entity and {_eye}
                     if {_dist} < {_best}:
                         set {_best} to {_dist}
                         set {_e} to loop-entity
