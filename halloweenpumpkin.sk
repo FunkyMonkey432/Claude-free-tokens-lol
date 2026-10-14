@@ -9,7 +9,7 @@ options:
 
 # /halloweenevent place      -> stand over the pit, makes the floating pumpkin + click box at your feet
 # /halloweenevent remove     -> removes every tagged pumpkin + click box (in loaded chunks)
-# /halloweenevent removenear -> removes ANY display/click entity within 3 blocks of you (for stray or old untagged pumpkins)
+# /halloweenevent removenear -> removes EVERY entity except players within 3 blocks of you (for stray or old untagged pumpkins)
 # /halloweeninfo             -> anyone can open the event menu
 # size = pumpkin size (if you use a textured head, try 1.0 and adjust), rotation = which way it points (0, 90, 180, 270)
 # facing = vertical (turns left/right to face you, stays upright), fixed (never turns) or center (also tilts up/down)
@@ -36,10 +36,10 @@ command /halloweenevent [<text>]:
             execute console command "kill @e[type=minecraft:interaction,tag=halloween_click]"
             send "<##FF7F00>Pumpkins removed. Still see one? Stand next to it and use /halloweenevent removenear"
         else if arg-1 is "removenear":
-            # no tag filter on purpose: catches pumpkins from older versions of this script
-            execute console command "execute as %player% at %player% run kill @e[type=minecraft:item_display,distance=..3]"
-            execute console command "execute as %player% at %player% run kill @e[type=minecraft:interaction,distance=..3]"
-            send "<##FF7F00>Removed pumpkins within 3 blocks of you."
+            # no tag or type filter on purpose: catches pumpkins from older versions of this script,
+            # whatever entity they were made from (item/block display, armor stand, interaction...)
+            execute console command "execute as %player% at %player% run kill @e[type=!minecraft:player,distance=..3]"
+            send "<##FF7F00>Removed everything (except players) within 3 blocks of you."
         else:
             send "<gray>Use /halloweenevent place, /halloweenevent remove or /halloweenevent removenear"
 
