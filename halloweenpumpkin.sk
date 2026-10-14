@@ -9,7 +9,7 @@ options:
 
 # /halloweenevent place      -> stand over the pit, makes the floating pumpkin + click box at your feet
 # /halloweenevent remove     -> removes every tagged pumpkin + click box (in loaded chunks)
-# /halloweenevent removenear -> removes EVERY entity except players within 1 block of you (stand right under the pumpkin) (for stray or old untagged pumpkins)
+# /halloweenevent removenearest -> removes the ONE entity closest to your head (stick your head in the pumpkin first). Repeat if needed.
 # /halloweeninfo             -> anyone can open the event menu
 # size = pumpkin size (if you use a textured head, try 1.0 and adjust), rotation = which way it points (0, 90, 180, 270)
 # facing = vertical (turns left/right to face you, stays upright), fixed (never turns) or center (also tilts up/down)
@@ -34,14 +34,24 @@ command /halloweenevent [<text>]:
         else if arg-1 is "remove":
             execute console command "kill @e[type=minecraft:item_display,tag=halloween_pumpkin]"
             execute console command "kill @e[type=minecraft:interaction,tag=halloween_click]"
-            send "<##FF7F00>Pumpkins removed. Still see one? Stand next to it and use /halloweenevent removenear"
-        else if arg-1 is "removenear":
-            # no tag or type filter on purpose: catches pumpkins from older versions of this script,
-            # whatever entity they were made from (item/block display, armor stand, interaction...)
-            execute console command "execute as %player% at %player% positioned ~ ~1 ~ run kill @e[type=!minecraft:player,distance=..1]"
-            send "<##FF7F00>Removed everything (except players) within 1 block of you."
+            send "<##FF7F00>Pumpkins removed. Still see one? Put your head inside it and use /halloweenevent removenearest"
+        else if arg-1 is "removenearest":
+            # removes ONE thing: whatever non-player entity is closest to your head (within 3 blocks).
+            # No tag/type filter, so it also catches old pumpkins from earlier versions of the script.
+            set {_best} to 4
+            loop all entities in radius 3 around player's eye location:
+                if loop-entity is not a player:
+                    set {_dist} to distance between location of loop-entity and player's eye location
+                    if {_dist} < {_best}:
+                        set {_best} to {_dist}
+                        set {_e} to loop-entity
+            if {_e} is not set:
+                send "<red>Nothing within 3 blocks. If you still see a pumpkin there, it is a block or a hologram from another plugin, not an entity from this script."
+                stop
+            execute console command "kill %uuid of {_e}%"
+            send "<##FF7F00>Removed 1 %type of {_e}%. Run it again if part of the pumpkin is still there."
         else:
-            send "<gray>Use /halloweenevent place, /halloweenevent remove or /halloweenevent removenear"
+            send "<gray>Use /halloweenevent place, /halloweenevent remove or /halloweenevent removenearest"
 
 command /halloweeninfo:
     trigger:
@@ -74,7 +84,8 @@ on load:
 #         execute console command "execute as @e[type=minecraft:item_display,tag=halloween_pumpkin] at @s run particle minecraft:dust{color:[1.0,0.55,0.0],scale:0.9} ~%{_dx}% ~%{_dy}% ~%{_dz}% 0 0 0 0 1 force"
 
 # right click the pumpkin -> opens the explanation menu
-on right click on entity:
+# "any" = still fires when a protection plugin (spawn protection, WorldGuard...) blocks non-ops from clicking entities
+on any right click on entity:
     if scoreboard tags of event-entity contains "halloween_click":
         cancel event
         halloweenMenu(player)
