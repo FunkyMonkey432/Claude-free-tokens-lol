@@ -43,7 +43,6 @@ command /halloweenevent [<text>]:
             send "<gray>Use /halloweenevent place, /halloweenevent remove or /halloweenevent removenear"
 
 command /halloweeninfo:
-    aliases: /halloween
     trigger:
         halloweenMenu(player)
 
