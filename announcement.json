@@ -1,0 +1,22 @@
+{
+  "username": "Server Announcements",
+  "content": "@everyone",
+  "embeds": [
+    {
+      "title": "🚀 THE SERVER IS GOING LIVE!",
+      "description": "The wait is over! We launch the moment **Tshu** goes live on Twitch, so everyone can watch it happen together.\n\n📺 **Watch the launch:** https://www.twitch.tv/tshu",
+      "color": 9520895,
+      "fields": [
+        {
+          "name": "✨ What we added",
+          "value": "💰 **Bounties** – set bounties on players\n👥 **Teams** – create your own teams\n⚔️ **Duels** – fight players in ranked or practise casually\n🕶️ **Black Markets** – find great deals, but be careful... he might scam you\n📦 **Item of the Day Boost** – a new item every day with a sell boost"
+        },
+        {
+          "name": "🔧 Enhanced",
+          "value": "🌍 New spawn\n🪨 Bedrock quality of life changes\n🎁 Crates\n📋 Menu UI"
+        }
+      ],
+      "footer": { "text": "See you on the stream!" }
+    }
+  ]
+}
