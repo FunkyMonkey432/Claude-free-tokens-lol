@@ -3,19 +3,40 @@
   "content": "@everyone",
   "embeds": [
     {
-      "title": "🚀 Server Launch · Going Live!",
-      "description": "The wait is over! We launch the moment **Tshu** goes live on Twitch, so everyone can watch it happen together. 🎉\n📺 **Watch the launch:** https://www.twitch.tv/tshu\n\n✨ **What we added**\n`+` **Bounties** - set bounties on players\n`+` **Teams** - create your own teams\n`+` **Duels** - fight players in ranked or practise casually\n`+` **Black Markets** - find great deals, but be careful... he might scam you\n`+` **Item of the Day Boost** - a new item every day with a sell boost\n\n🔧 **What's enhanced**\n`~` New **spawn**\n`~` **Bedrock** quality of life changes\n`~` **Crates**\n`~` **Menu UI**",
+      "title": "🚀 TSHU SMP · WE ARE GOING LIVE!",
+      "description": "The wait is **over**. The biggest update in TSHU SMP history launches the second **Tshu** hits **Go Live**, and you can watch it all happen with the whole community! 🔥\n\n📺 **Watch the launch:** https://www.twitch.tv/tshu\n\nTeams, bounties, duels, a shady black market and so much more. Here is everything waiting for you. 👇",
       "color": 10849023
     },
     {
-      "title": "📋 Quick Look",
+      "title": "👥 Teams · Build Your Empire",
+      "description": "Gather your crew and make it official!\n\n**Team Chat:** talk privately with your team in your own chat.\n**Richest Team:** a leaderboard shows which team has the biggest bank. Be #1.\n**⭐ Team Tags (the big one):** every team member gets a **custom tag above their name** that shows everyone who you roll with.\n\n**Cost to create a team: $25,000**\nMake it count.",
+      "color": 10849023
+    },
+    {
+      "title": "💰 Bounties · Put a Price on Their Head",
+      "description": "Got a rival? Make them pay.\n\n**1.** Any player can place **any amount** on another player's head\n**2.** Bounties stack as more players add to the pot\n**3.** The player who **kills the target takes the entire bounty**\n\nHunt or be hunted. 🎯",
+      "color": 10849023
+    },
+    {
+      "title": "⚔️ Duels · Prove Yourself",
+      "description": "Two ways to fight:\n\n🏆 **Ranked:** `/duelq`\nJoin the queue. High stakes: you **don't keep your inventory** and your **stats are recorded**.\n\n🛡️ **Practice:** `/duelpractice`\nSharpen your skills. You **keep your inventory** and **no stats are recorded**.\n\nTrain in practice, then climb the ranks.",
+      "color": 10849023
+    },
+    {
+      "title": "🕶️ Black Market · Trust No One",
+      "description": "Deep in the shadows, a dealer is waiting.\n\n**New items every day** at great prices\n**Limited stock.** When it's gone, it's gone\n**Careful...** the shady dealer might just **scam you**. Are you feeling lucky?",
+      "color": 10849023
+    },
+    {
+      "title": "📈 Item of the Day · Price Boosted",
+      "description": "Every day, **one item gets a huge sell boost**.\n\nTime to **dust off your old farms** and get them ready. The right item could make you rich overnight. 🤑",
+      "color": 10849023
+    },
+    {
+      "title": "🔧 Also Enhanced",
+      "description": "`~` **New Spawn:** a fresh start for every player\n`~` **Bedrock Quality of Life:** smoother play for our Bedrock family\n`~` **Crates:** overhauled and better than ever\n`~` **Menu UI:** a cleaner, sleeker interface",
       "color": 10849023,
-      "fields": [
-        { "name": "💰 Bounties", "value": "Put a price on a player's head", "inline": true },
-        { "name": "⚔️ Duels", "value": "Ranked or practise", "inline": true },
-        { "name": "🕶️ Black Market", "value": "Great deals... or a scam", "inline": true }
-      ],
-      "footer": { "text": "TSHU SMP · See you on the stream!" }
+      "footer": { "text": "TSHU SMP • Launch Announcement" }
     }
   ]
 }
